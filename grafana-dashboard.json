@@ -40,7 +40,7 @@
       }
     ]
   },
-  "description": "先看谁快用完。上面是当前值；下面两张图固定近 30 天。出口和自用分开，不再把不同配额加在一起。",
+  "description": "先看节奏：100% 是均匀用量，超过就是用快了。出口和自用分开。下面趋势固定近 30 天。",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -97,7 +97,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 14,
+        "w": 8,
         "x": 0,
         "y": 1
       },
@@ -148,6 +148,89 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "100% 是把配额均匀摊到重置/到期前 30 天、截止到现在该用掉的量。超过 100% 就是用得比均匀快。",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "max": 3,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 1.25
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "id": 26,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "13.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_used_bytes{sid=~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} / (xui_subscription_quota_bytes{sid=~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid=~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0.001), 1))",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "title": "节奏",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "description": "距下次流量重置。akko-us-1、bwg-us-2 是每月 2 日，dmit-us-3 是每月 24 日。",
       "fieldConfig": {
         "defaults": {
@@ -172,8 +255,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 10,
-        "x": 14,
+        "w": 8,
+        "x": 16,
         "y": 1
       },
       "id": 22,
@@ -268,7 +351,7 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 14,
+        "w": 8,
         "x": 0,
         "y": 8
       },
@@ -319,6 +402,89 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "100% 是把配额均匀摊到重置/到期前 30 天、截止到现在该用掉的量。超过 100% 就是用得比均匀快。",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "max": 3,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 1.25
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 27,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "13.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_used_bytes{sid!~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} / (xui_subscription_quota_bytes{sid!~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid!~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0.001), 1))",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "title": "节奏",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
       "description": "luomk 是订阅到期日，另外两台是计费日。",
       "fieldConfig": {
         "defaults": {
@@ -343,8 +509,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 10,
-        "x": 14,
+        "w": 8,
+        "x": 16,
         "y": 8
       },
       "id": 25,
@@ -388,6 +554,19 @@
       ],
       "title": "剩余天数",
       "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 40,
+      "panels": [],
+      "title": "全部节点",
+      "type": "row"
     },
     {
       "datasource": {
@@ -606,6 +785,61 @@
                 }
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "节奏"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 3
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.width",
+                "value": 120
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "gauge"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "yellow",
+                      "value": 1
+                    },
+                    {
+                      "color": "red",
+                      "value": 1.25
+                    }
+                  ]
+                }
+              }
+            ]
           }
         ]
       },
@@ -613,7 +847,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 15
       },
       "id": 11,
       "options": {
@@ -622,7 +856,7 @@
         "sortBy": [
           {
             "desc": true,
-            "displayName": "已用比例"
+            "displayName": "节奏"
           }
         ]
       },
@@ -723,6 +957,18 @@
           "instant": true,
           "range": false,
           "format": "table"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"} / (xui_subscription_quota_bytes{sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0.001), 1))",
+          "refId": "I",
+          "instant": true,
+          "range": false,
+          "format": "table"
         }
       ],
       "title": "全部节点",
@@ -778,12 +1024,13 @@
               "sid": 0,
               "Value #H": 1,
               "Value #D": 2,
-              "Value #A": 3,
-              "Value #C": 4,
-              "Value #B": 5,
-              "Value #F": 6,
-              "Value #G": 7,
-              "Value #E": 8
+              "Value #I": 3,
+              "Value #A": 4,
+              "Value #C": 5,
+              "Value #B": 6,
+              "Value #F": 7,
+              "Value #G": 8,
+              "Value #E": 9
             },
             "renameByName": {
               "sid": "节点",
@@ -794,12 +1041,26 @@
               "Value #B": "配额",
               "Value #F": "剩余天数",
               "Value #G": "日预算",
-              "Value #E": "重置/到期"
+              "Value #E": "重置/到期",
+              "Value #I": "节奏"
             }
           }
         }
       ],
       "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 41,
+      "panels": [],
+      "title": "30天用量",
+      "type": "row"
     },
     {
       "datasource": {
@@ -871,9 +1132,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
+        "w": 8,
         "x": 0,
-        "y": 24
+        "y": 26
       },
       "id": 30,
       "options": {
@@ -960,9 +1221,9 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 24
+        "w": 8,
+        "x": 8,
+        "y": 26
       },
       "id": 31,
       "options": {
@@ -997,6 +1258,128 @@
       ],
       "timeFrom": "30d",
       "title": "每天新增已用",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "均匀线把配额摊在重置/到期前的 30 天里。实际线在均匀线上面，就是已经超过截止到现在的平均用量。",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 15,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*均匀"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    8,
+                    8
+                  ]
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 26
+      },
+      "id": 32,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "13.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"}",
+          "legendFormat": "{{sid}} 实际",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_quota_bytes{sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0), 1)",
+          "legendFormat": "{{sid}} 均匀",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": "30d",
+      "title": "实际用量和均匀用量",
       "type": "timeseries"
     }
   ],
