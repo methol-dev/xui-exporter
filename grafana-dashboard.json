@@ -40,143 +40,40 @@
       }
     ]
   },
+  "description": "先看谁快用完。上面是当前值；下面两张图固定近 30 天。出口和自用分开，不再把不同配额加在一起。",
   "editable": true,
   "fiscalYearStartMonth": 0,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "id": null,
   "links": [],
   "panels": [
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
+      "collapsed": false,
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 1,
+        "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "count(xui_subscription_up)",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Subscriptions",
-      "type": "stat"
+      "id": 20,
+      "panels": [],
+      "title": "出口 · akko-us-1 / bwg-us-2 / dmit-us-3",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 0
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "count(xui_subscription_up == 1)",
-          "refId": "A"
-        }
-      ],
-      "title": "Healthy Subscriptions",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
+      "description": "当前周期已用 / 配额。70% 起变黄，90% 起变红。",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "mappings": [],
+          "decimals": 0,
+          "max": 1,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -185,8 +82,87 @@
                 "value": null
               },
               {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
                 "color": "red",
-                "value": 1
+                "value": 0.9
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 14,
+        "x": 0,
+        "y": 1
+      },
+      "id": 21,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "13.2.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "xui_subscription_used_ratio{sid=~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"}",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
+        }
+      ],
+      "title": "已用比例",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "description": "距下次流量重置。akko-us-1、bwg-us-2 是每月 2 日，dmit-us-3 是每月 24 日。",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "max": 31,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794F2",
+                "value": null
               }
             ]
           },
@@ -195,226 +171,230 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 0
+        "h": 6,
+        "w": 10,
+        "x": 14,
+        "y": 1
       },
-      "id": 3,
+      "id": 22,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "count(xui_subscription_expired == 1) or vector(0)",
-          "refId": "A"
+          "editorMode": "code",
+          "expr": "xui_subscription_days_until_expire{sid=~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"}",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ],
-      "title": "Expired Subscriptions",
-      "type": "stat"
+      "title": "剩余天数",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 23,
+      "panels": [],
+      "title": "自用",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "luomk 是订阅到期；akko-nilei、akko-methol 是每月重置。",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
-          "mappings": [],
+          "decimals": 0,
+          "max": 1,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "red",
+                "value": 0.9
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "percentunit"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 0
+        "h": 6,
+        "w": 14,
+        "x": 0,
+        "y": 8
       },
-      "id": 4,
+      "id": 24,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(xui_subscription_used_bytes * on(sid) group_left xui_subscription_expired == 0) or sum(xui_subscription_used_bytes)",
-          "refId": "A"
+          "editorMode": "code",
+          "expr": "xui_subscription_used_ratio{sid!~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"}",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ],
-      "title": "Total Used",
-      "type": "stat"
+      "title": "已用比例",
+      "type": "bargauge"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "luomk 是订阅到期日，另外两台是计费日。",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "thresholds"
           },
-          "mappings": [],
+          "decimals": 0,
+          "max": 31,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#5794F2",
                 "value": null
               }
             ]
           },
-          "unit": "bytes"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 0
+        "h": 6,
+        "w": 10,
+        "x": 14,
+        "y": 8
       },
-      "id": 5,
+      "id": 25,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
+        "displayMode": "gradient",
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(xui_subscription_remaining_bytes * on(sid) group_left xui_subscription_expired == 0) or sum(xui_subscription_remaining_bytes)",
-          "refId": "A"
+          "editorMode": "code",
+          "expr": "xui_subscription_days_until_expire{sid!~\"akko-us-1|bwg-us-2|dmit-us-3\",sid=~\"$sid\"}",
+          "legendFormat": "{{sid}}",
+          "refId": "A",
+          "instant": true,
+          "range": false
         }
       ],
-      "title": "Total Remaining",
-      "type": "stat"
+      "title": "剩余天数",
+      "type": "bargauge"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "s"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 0
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "avg(xui_subscription_refresh_duration_seconds)",
-          "refId": "A"
-        }
-      ],
-      "title": "Avg Refresh Duration",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
+      "description": "按已用比例从高到低排。采集失败会标红。",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -430,7 +410,6 @@
             },
             "inspect": false
           },
-          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -445,7 +424,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Download"
+              "options": "已用"
             },
             "properties": [
               {
@@ -454,14 +433,14 @@
               },
               {
                 "id": "custom.width",
-                "value": 93
+                "value": 110
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Upload"
+              "options": "配额"
             },
             "properties": [
               {
@@ -470,14 +449,14 @@
               },
               {
                 "id": "custom.width",
-                "value": 89
+                "value": 110
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Used"
+              "options": "剩余"
             },
             "properties": [
               {
@@ -486,14 +465,14 @@
               },
               {
                 "id": "custom.width",
-                "value": 85
+                "value": 110
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Quota"
+              "options": "日预算"
             },
             "properties": [
               {
@@ -502,157 +481,31 @@
               },
               {
                 "id": "custom.width",
-                "value": 80
+                "value": 110
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Remaining"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              },
-              {
-                "id": "custom.width",
-                "value": 99
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Daily Budget"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "bytes"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Expire"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "dateTimeAsIso"
-              },
-              {
-                "id": "custom.width",
-                "value": 167
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Days Left"
-            },
-            "properties": [
-              {
-                "id": "decimals",
-                "value": 1
-              },
-              {
-                "id": "custom.width",
-                "value": 109
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Up"
-            },
-            "properties": [
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "0": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Down"
-                      },
-                      "1": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Up"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "basic",
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 74
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Expired"
-            },
-            "properties": [
-              {
-                "id": "mappings",
-                "value": [
-                  {
-                    "options": {
-                      "0": {
-                        "color": "green",
-                        "index": 0,
-                        "text": "Active"
-                      },
-                      "1": {
-                        "color": "red",
-                        "index": 1,
-                        "text": "Expired"
-                      }
-                    },
-                    "type": "value"
-                  }
-                ]
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "basic",
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "custom.width",
-                "value": 86
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Used Ratio"
+              "options": "已用比例"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "percentunit"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 1
+              },
+              {
+                "id": "custom.width",
+                "value": 140
               },
               {
                 "id": "custom.cellOptions",
@@ -680,20 +533,87 @@
                     }
                   ]
                 }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "重置/到期"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsIso"
               },
               {
-                "id": "max",
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "剩余天数"
+            },
+            "properties": [
+              {
+                "id": "decimals",
                 "value": 1
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "采集"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "0": {
+                        "color": "red",
+                        "index": 1,
+                        "text": "失败"
+                      },
+                      "1": {
+                        "color": "green",
+                        "index": 0,
+                        "text": "正常"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 10,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 14
       },
       "id": 11,
       "options": {
@@ -701,125 +621,111 @@
         "showHeader": true,
         "sortBy": [
           {
-            "desc": false,
-            "displayName": "Days Left"
+            "desc": true,
+            "displayName": "已用比例"
           }
         ]
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_download_bytes",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"}",
+          "refId": "A",
           "instant": true,
-          "refId": "A"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_upload_bytes",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_quota_bytes{sid=~\"$sid\"}",
+          "refId": "B",
           "instant": true,
-          "refId": "B"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_used_bytes",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_remaining_bytes{sid=~\"$sid\"}",
+          "refId": "C",
           "instant": true,
-          "refId": "C"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_quota_bytes",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_used_ratio{sid=~\"$sid\"}",
+          "refId": "D",
           "instant": true,
-          "refId": "D"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_remaining_bytes",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_expire_timestamp_seconds{sid=~\"$sid\"} * 1000",
+          "refId": "E",
           "instant": true,
-          "refId": "E"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_used_ratio",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_days_until_expire{sid=~\"$sid\"}",
+          "refId": "F",
           "instant": true,
-          "refId": "F"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_expire_timestamp_seconds * 1000",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_daily_budget_bytes{sid=~\"$sid\"}",
+          "refId": "G",
           "instant": true,
-          "refId": "G"
+          "range": false,
+          "format": "table"
         },
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_days_until_expire",
-          "format": "table",
+          "editorMode": "code",
+          "expr": "xui_subscription_up{sid=~\"$sid\"}",
+          "refId": "H",
           "instant": true,
-          "refId": "H"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_daily_budget_bytes",
-          "format": "table",
-          "instant": true,
-          "refId": "I"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_up",
-          "format": "table",
-          "instant": true,
-          "refId": "J"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_expired",
-          "format": "table",
-          "instant": true,
-          "refId": "K"
+          "range": false,
+          "format": "table"
         }
       ],
-      "title": "Subscription Details",
+      "title": "全部节点",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -832,81 +738,63 @@
           "options": {
             "excludeByName": {
               "Time": true,
-              "Time 1": true,
-              "Time 2": true,
-              "Time 3": true,
-              "Time 4": true,
-              "Time 5": true,
-              "Time 6": true,
-              "Time 7": true,
-              "Time 8": true,
-              "Time 9": true,
-              "Time 10": true,
-              "Time 11": true,
               "__name__": true,
-              "__name__ 1": true,
-              "__name__ 2": true,
-              "__name__ 3": true,
-              "__name__ 4": true,
-              "__name__ 5": true,
-              "__name__ 6": true,
-              "__name__ 7": true,
-              "__name__ 8": true,
-              "__name__ 9": true,
-              "__name__ 10": true,
-              "__name__ 11": true,
               "instance": true,
-              "instance 1": true,
-              "instance 2": true,
-              "instance 3": true,
-              "instance 4": true,
-              "instance 5": true,
-              "instance 6": true,
-              "instance 7": true,
-              "instance 8": true,
-              "instance 9": true,
-              "instance 10": true,
-              "instance 11": true,
               "job": true,
+              "Time 1": true,
+              "__name__ 1": true,
+              "instance 1": true,
               "job 1": true,
+              "Time 2": true,
+              "__name__ 2": true,
+              "instance 2": true,
               "job 2": true,
+              "Time 3": true,
+              "__name__ 3": true,
+              "instance 3": true,
               "job 3": true,
+              "Time 4": true,
+              "__name__ 4": true,
+              "instance 4": true,
               "job 4": true,
+              "Time 5": true,
+              "__name__ 5": true,
+              "instance 5": true,
               "job 5": true,
+              "Time 6": true,
+              "__name__ 6": true,
+              "instance 6": true,
               "job 6": true,
+              "Time 7": true,
+              "__name__ 7": true,
+              "instance 7": true,
               "job 7": true,
-              "job 8": true,
-              "job 9": true,
-              "job 10": true,
-              "job 11": true
+              "Time 8": true,
+              "__name__ 8": true,
+              "instance 8": true,
+              "job 8": true
             },
             "indexByName": {
               "sid": 0,
-              "Value #J": 1,
-              "Value #K": 2,
+              "Value #H": 1,
+              "Value #D": 2,
               "Value #A": 3,
-              "Value #B": 4,
-              "Value #C": 5,
-              "Value #D": 6,
-              "Value #E": 7,
-              "Value #F": 8,
-              "Value #G": 9,
-              "Value #H": 10,
-              "Value #I": 11
+              "Value #C": 4,
+              "Value #B": 5,
+              "Value #F": 6,
+              "Value #G": 7,
+              "Value #E": 8
             },
             "renameByName": {
-              "Value #A": "Download",
-              "Value #B": "Upload",
-              "Value #C": "Used",
-              "Value #D": "Quota",
-              "Value #E": "Remaining",
-              "Value #F": "Used Ratio",
-              "Value #G": "Expire",
-              "Value #H": "Days Left",
-              "Value #I": "Daily Budget",
-              "Value #J": "Up",
-              "Value #K": "Expired",
-              "sid": "SID"
+              "sid": "节点",
+              "Value #H": "采集",
+              "Value #D": "已用比例",
+              "Value #A": "已用",
+              "Value #C": "剩余",
+              "Value #B": "配额",
+              "Value #F": "剩余天数",
+              "Value #G": "日预算",
+              "Value #E": "重置/到期"
             }
           }
         }
@@ -918,6 +806,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "固定看近 30 天，不受页面右上角的时间范围影响。akko-us-1、bwg-us-2、dmit-us-3 从今天才开始有数据。",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -932,7 +821,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 15,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -954,35 +843,47 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "line"
             }
           },
-          "mappings": [],
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.7
+              },
+              {
+                "color": "red",
+                "value": 0.9
               }
             ]
-          },
-          "unit": "percentunit"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 24
       },
-      "id": 7,
+      "id": 30,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
           "displayMode": "table",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
@@ -991,19 +892,21 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
+          "editorMode": "code",
           "expr": "xui_subscription_used_ratio{sid=~\"$sid\"}",
           "legendFormat": "{{sid}}",
           "refId": "A"
         }
       ],
-      "title": "Used Ratio by Subscription",
+      "timeFrom": "30d",
+      "title": "已用比例",
       "type": "timeseries"
     },
     {
@@ -1011,6 +914,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
+      "description": "固定看近 30 天。计费日用量清零时的下跌被截成 0。",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1024,8 +928,8 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
+            "drawStyle": "bars",
+            "fillOpacity": 40,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1050,162 +954,23 @@
               "mode": "off"
             }
           },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
+          "unit": "bytes"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 9,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 24
       },
-      "id": 8,
+      "id": 31,
       "options": {
         "legend": {
-          "calcs": ["lastNotNull"],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_days_until_expire{sid=~\"$sid\"}",
-          "legendFormat": "{{sid}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Days Until Expire",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Compare actual usage vs ideal usage (linear distribution over subscription period).\n\n- Ideal: quota × (elapsed_days / 30)\n- Actual: used_bytes\n\nIf actual > ideal: you're using faster than average\nIf actual < ideal: you have surplus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Ideal.*"
-            },
-            "properties": [
-              {
-                "id": "custom.lineStyle",
-                "value": {
-                  "dash": [10, 10],
-                  "fill": "dash"
-                }
-              },
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Actual.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 17
-      },
-      "id": 12,
-      "options": {
-        "legend": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -1216,376 +981,54 @@
           "sort": "desc"
         }
       },
-      "pluginVersion": "10.0.0",
+      "pluginVersion": "13.2.4",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"}",
-          "legendFormat": "{{sid}} - Actual",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_quota_bytes{sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0), 1)",
-          "legendFormat": "{{sid}} - Ideal",
-          "refId": "B"
-        }
-      ],
-      "title": "Actual vs Ideal Usage",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "description": "Usage deviation from ideal schedule.\n\nPositive (red): using faster than average, exceeding budget\nNegative (green): using slower than average, under budget",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": true,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 2,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "area"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 0
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 17
-      },
-      "id": 13,
-      "options": {
-        "legend": {
-          "calcs": ["lastNotNull"],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"} - xui_subscription_quota_bytes{sid=~\"$sid\"} * clamp_max(clamp_min((time() - (xui_subscription_expire_timestamp_seconds{sid=~\"$sid\"} - 30 * 86400)) / (30 * 86400), 0), 1)",
+          "editorMode": "code",
+          "expr": "clamp_min(delta(xui_subscription_used_bytes{sid=~\"$sid\"}[1d]), 0)",
           "legendFormat": "{{sid}}",
-          "refId": "A"
+          "refId": "A",
+          "interval": "1d"
         }
       ],
-      "title": "Usage Deviation (Actual - Ideal)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Download.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "blue",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": ".*Upload.*"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 24
-      },
-      "id": 9,
-      "options": {
-        "legend": {
-          "calcs": ["lastNotNull"],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_download_bytes{sid=~\"$sid\"}",
-          "legendFormat": "{{sid}} - Download",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_upload_bytes{sid=~\"$sid\"}",
-          "legendFormat": "{{sid}} - Upload",
-          "refId": "B"
-        }
-      ],
-      "title": "Traffic by Subscription",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "showValues": false,
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 24
-      },
-      "id": 10,
-      "options": {
-        "legend": {
-          "calcs": ["lastNotNull"],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "desc"
-        }
-      },
-      "pluginVersion": "10.0.0",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "xui_subscription_daily_budget_bytes{sid=~\"$sid\"}",
-          "legendFormat": "{{sid}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Daily Budget Bytes",
+      "timeFrom": "30d",
+      "title": "每天新增已用",
       "type": "timeseries"
     }
   ],
   "refresh": "30s",
-  "schemaVersion": 38,
-  "tags": ["xui", "subscription", "monitoring"],
+  "schemaVersion": 42,
+  "tags": [
+    "xui",
+    "subscription",
+    "monitoring"
+  ],
   "templating": {
     "list": [
       {
         "allValue": ".*",
         "current": {
           "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
         },
         "definition": "label_values(xui_subscription_up, sid)",
-        "description": "Filter by subscription ID",
+        "description": "按节点过滤",
         "hide": 0,
         "includeAll": true,
-        "label": "Subscription",
+        "label": "节点",
         "multi": true,
         "name": "sid",
         "options": [],
@@ -1603,12 +1046,12 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-30d",
     "to": "now"
   },
   "timepicker": {},
-  "timezone": "",
-  "title": "XUI Subscription Exporter",
+  "timezone": "browser",
+  "title": "流量与订阅",
   "uid": "xui-subscription-exporter",
   "version": 1,
   "weekStart": ""
