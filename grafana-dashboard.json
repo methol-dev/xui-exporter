@@ -608,7 +608,11 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "bytes"
+                "value": "suffix: GiB"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               },
               {
                 "id": "custom.width",
@@ -624,7 +628,11 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "bytes"
+                "value": "suffix: GiB"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               },
               {
                 "id": "custom.width",
@@ -640,7 +648,11 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "bytes"
+                "value": "suffix: GiB"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               },
               {
                 "id": "custom.width",
@@ -656,7 +668,11 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "bytes"
+                "value": "suffix: GiB"
+              },
+              {
+                "id": "decimals",
+                "value": 1
               },
               {
                 "id": "custom.width",
@@ -723,7 +739,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "dateTimeAsIso"
+                "value": "time:YYYY-MM-DD HH:mm:ss"
               },
               {
                 "id": "custom.width",
@@ -868,7 +884,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"}",
+          "expr": "xui_subscription_used_bytes{sid=~\"$sid\"} / 1073741824",
           "refId": "A",
           "instant": true,
           "range": false,
@@ -880,7 +896,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "xui_subscription_quota_bytes{sid=~\"$sid\"}",
+          "expr": "xui_subscription_quota_bytes{sid=~\"$sid\"} / 1073741824",
           "refId": "B",
           "instant": true,
           "range": false,
@@ -892,7 +908,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "xui_subscription_remaining_bytes{sid=~\"$sid\"}",
+          "expr": "xui_subscription_remaining_bytes{sid=~\"$sid\"} / 1073741824",
           "refId": "C",
           "instant": true,
           "range": false,
@@ -940,7 +956,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "xui_subscription_daily_budget_bytes{sid=~\"$sid\"}",
+          "expr": "xui_subscription_daily_budget_bytes{sid=~\"$sid\"} / 1073741824",
           "refId": "G",
           "instant": true,
           "range": false,
